@@ -102,7 +102,7 @@ json_array_length(JSON_VALUE v) {
 
 JSON_VALUE
 json_array_nth(JSON_VALUE v, int i) {
-  assert(v->type != JSON_TYPE_ARRAY);
+  assert(v->type == JSON_TYPE_ARRAY);
   return (JSON_VALUE) v->array->e[i];
 }
 
@@ -132,6 +132,12 @@ json_string_new(const JSON_STRING str) {
   JSON_VALUE v;
   _JSON_VALUE_MAKE(v, JSON_TYPE_STRING, string, strdup(str));
   return v;
+}
+
+const char*
+json_string_get(JSON_VALUE v) {
+  assert(v->type == JSON_TYPE_STRING);
+  return v->string;
 }
 
 void

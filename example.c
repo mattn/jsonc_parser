@@ -2,20 +2,8 @@
 #include <stdlib.h>
 #include "jsonc.h"
 
-int
-main() {
-  JSON_VALUE v;
-  JSON_VALUE ss = json_string_new("");
-
-  char* foo = "{'foo': 'bar', 'bar': null, 'baz':[false,'bbb']}";
-  JSON_ERROR e = json_parse(&foo, &v);
-  if (e == JSON_ERROR_SUCCEEDED) {
-    json_serialize(ss, v);
-    printf("%s\n", ss->string);
-  } else {
-    printf("parse error: %s\n", foo);
-  }
-/*
+void
+test_serialize() {
   JSON_VALUE ss = json_string_new("");
   JSON_VALUE o = json_object_new();
   JSON_VALUE o2 = json_object_new();
@@ -39,5 +27,26 @@ main() {
   json_value_unref(o);
   json_value_unref(o2);
   json_value_unref(ss);
-*/
+}
+
+void
+test_parse() {
+  JSON_VALUE v1;
+  char* foo = "{'foo': 'bar', 'bar': null, 'baz':[false,'bbb']}";
+  JSON_ERROR e = json_parse(&foo, &v1);
+  if (e == JSON_ERROR_SUCCEEDED) {
+    JSON_VALUE v2 = json_object_get(v1, "baz");
+    JSON_VALUE v3 = json_array_nth(v2, 1);
+	printf("%s\n", json_string_get(v3));
+    json_value_unref(v1);
+  } else {
+    printf("parse error: %s\n", foo);
+  }
+
+}
+
+int
+main() {
+  test_serialize();
+  test_parse();
 }

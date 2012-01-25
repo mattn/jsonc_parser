@@ -75,7 +75,7 @@ int
 json_value_unref(JSON_VALUE v) {
   if (v->ref == 1)
     json_value_finalize(v);
-  return --v->ref;
+  return v->ref > 0 ? --v->ref : 0;
 }
 
 JSON_VALUE

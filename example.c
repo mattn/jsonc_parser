@@ -9,7 +9,7 @@ test_serialize() {
   JSON_VALUE a = json_array_new();
 
   json_object_put(o2, "foo", json_string_new("hello world"));
-  json_object_put(o2, "bar", json_string_new("こにゃにゃちわ"));
+  json_object_put(o2, "bar", json_string_new(" こにゃにゃちわ "));
   json_object_put(o2, "baz", json_number_new(23.4));
   json_object_put(o2, "boo", json_boolean_new(1));
 

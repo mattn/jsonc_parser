@@ -7,6 +7,10 @@
 #include <string.h>
 #include <assert.h>
 
+#ifdef _MSC_VER
+# define snprintf _snprintf
+#endif
+
 #include "trie_tree.h"
 
 typedef enum {
@@ -162,8 +166,9 @@ json_object_put(JSON_VALUE v, const char* key, JSON_VALUE value) {
 
 JSON_VALUE
 json_object_get(JSON_VALUE v, const char* key) {
+  trie* value;
   assert(v->type == JSON_TYPE_OBJECT);
-  trie* value = trie_get((trie*) v->object, key);
+  value = trie_get((trie*) v->object, key);
   assert(value != NULL);
   return value->value;
 }
@@ -251,10 +256,11 @@ json_serialize(JSON_VALUE s, JSON_VALUE v) {
   } else
   if (v->type == JSON_TYPE_ARRAY) {
     int i;
+    JSON_VALUE ss;
     json_string_append(s, "[");
     for (i = 0; i < v->array->n; i++) {
       if (i != 0) json_string_append(s, ",");
-      JSON_VALUE ss = json_string_new("");
+      ss = json_string_new("");
       json_serialize(ss, (JSON_VALUE) v->array->e[i]);
       json_string_append(s, ss->string);
       json_value_finalize(ss);
@@ -262,8 +268,9 @@ json_serialize(JSON_VALUE s, JSON_VALUE v) {
     json_string_append(s, "]");
   } else
   if (v->type == JSON_TYPE_OBJECT) {
+    JSON_VALUE ss;
     json_string_append(s, "{");
-    JSON_VALUE ss = json_string_new("");
+    ss = json_string_new("");
     trie_foreach(v->object, _json_serialize_object, ss);
     json_string_append(s, ss->string);
     json_value_finalize(ss);
@@ -375,9 +382,10 @@ _json_parse_string(char** i, JSON_VALUE* v) {
   char t = **i;
   char* p;
   char* tmp;
+  JSON_VALUE s;
   
   p = ++(*i);
-  JSON_VALUE s = json_string_new("");
+  s = json_string_new("");
   while (**i && **i != t) {
     if (**i == '\\' && *(*i+1)) {
       (*i)++;

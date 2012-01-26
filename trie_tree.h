@@ -48,9 +48,10 @@ trie_put(trie* p, const char* key, const void* value) {
         break;
       }
     if (!next) {
+      trie** children;
       next = trie_new();
       if (!next) return NULL;
-      trie** children = (trie**) realloc(p->next, (p->n+1) * sizeof(trie*));
+      children = (trie**) realloc(p->next, (p->n+1) * sizeof(trie*));
       if (!children) return NULL;
       p->next = children;
       next->c = *key;
@@ -83,7 +84,7 @@ trie_get(trie* p, const char* key) {
   return NULL;
 }
 
-int
+void
 trie_delete(trie* p, const char* key) {
   p = trie_get(p, key);
   while (p) {
